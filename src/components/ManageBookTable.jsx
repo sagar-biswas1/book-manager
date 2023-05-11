@@ -1,35 +1,53 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const ManageBookTable = () => {
+  const [allBooks, setAllBooks] = useState([]);
+  useEffect(() => {
+    fetch(`http://localhost:4000/all-books`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setAllBooks(data);
+      });
+  }, []);
+
+  const handleDelete = (id) => {
+    fetch(`http://localhost:4000/book/${id}`, {
+      method: "DELETE",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        // console.log(data);
+        // setAllBooks(data);
+      });
+  };
+
   return (
     <div>
       <table className="table table-dark table-striped">
         <thead>
           <tr>
-            <th scope="col">#</th>
-            <th scope="col">First</th>
-            <th scope="col">Last</th>
-            <th scope="col">Handle</th>
+            <th scope="col">Name</th>
+            <th scope="col">author</th>
+            <th scope="col">categoryName</th>
+            <th scope="col">Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Ottodddddddddddddddddddddddddddddd</td>
-            <td>@mdo</td>
-          </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>Jacob</td>
-            <td>Thornton</td>
-            <td>@fat</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td colspan="2">Larry the Bird</td>
-            <td>@twitter</td>
-          </tr>
+          {allBooks.map((book) => (
+            <tr>
+              <th scope="row">{book.bookName}</th>
+              <td>{book.authorName}</td>
+              <td>{book.categoryName}</td>
+              <td>
+                <button onClick={() => handleDelete(book._id)}>delete</button>
+                <Link to={`/admin/dashboard/edit-books/${book._id}`}>
+                  update
+                </Link>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

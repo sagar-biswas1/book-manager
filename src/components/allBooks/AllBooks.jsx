@@ -1,12 +1,57 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import BookCard from "./BookCard";
 
 const AllBooks = () => {
+  const options = [
+    "Fiction",
+    "Non-fiction",
+    "Mystery",
+    "Programming",
+    "Science fiction",
+    "Fantasy",
+    "Horror",
+    "Biography",
+    "Autobiography",
+    "History",
+    "Self-help",
+    "Business",
+    "Memoir",
+    "Poetry",
+    "Children's books",
+    "Travel",
+    "Religion and spirituality",
+    "Science",
+    "Art and design",
+  ];
+  const [searchText, setSearchText] = useState("");
+  const [selectedSearchValue, setSelectedSearchValue] = useState("");
+  const [allBooks, setAllBooks] = useState([]);
+  useEffect(() => {
+    fetch(
+      `http://localhost:4000/all-books?bookName=${searchText}&&categoryName=${selectedSearchValue}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setAllBooks(data);
+      });
+  }, [selectedSearchValue, searchText]);
+
+  const handlerSearch = () => {
+    console.log(searchText, searchText);
+  };
+
+  const handleChangeOfSelectedValue = (event) => {
+    console.log(event.target.value);
+    setSelectedSearchValue(event.target.value);
+  };
+
   return (
     <div className="container mt-5">
       <div className="m-auto" style={{ width: "max-content" }}>
         <div className="input-group mb-3">
           <input
+            onBlur={(e) => setSearchText(e.target.value)}
             type="text"
             className="form-control"
             placeholder="Insert a search text"
@@ -17,16 +62,24 @@ const AllBooks = () => {
             className="btn btn-outline-info"
             type="button"
             id="button-addon2"
+            onClick={handlerSearch}
           >
             Search
           </button>
         </div>
         <div className="input-group mb-3">
-          <select className="form-select" id="inputGroupSelect02">
-            <option selected>Choose...</option>
-            <option value="1">One</option>
-            <option value="2">Two</option>
-            <option value="3">Three</option>
+          <select
+            className="form-select"
+            id="inputGroupSelect02"
+            value={selectedSearchValue}
+            onChange={handleChangeOfSelectedValue}
+          >
+            <option value=""></option>
+            {options.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
           </select>
           <label className="input-group-text" for="inputGroupSelect02">
             Options
@@ -34,40 +87,14 @@ const AllBooks = () => {
         </div>
       </div>
       <div className="row row-cols-1 row-cols-md-3 g-4">
+        {allBooks.map((book) => (
+          <BookCard book={book} />
+        ))}
+
+        {/* <BookCard />
         <BookCard />
-        <BookCard />
-        <BookCard />
-        <BookCard />
+        <BookCard /> */}
       </div>
-      <nav aria-label="Page navigation example m-auto text-center">
-        <ul className="pagination justify-content-center">
-          <li className="page-item">
-            <a className="page-link" href="#">
-              Previous
-            </a>
-          </li>
-          <li className="page-item">
-            <a className="page-link" href="#">
-              1
-            </a>
-          </li>
-          <li className="page-item">
-            <a className="page-link" href="#">
-              2
-            </a>
-          </li>
-          <li className="page-item">
-            <a className="page-link" href="#">
-              3
-            </a>
-          </li>
-          <li className="page-item">
-            <a className="page-link" href="#">
-              Next
-            </a>
-          </li>
-        </ul>
-      </nav>
     </div>
   );
 };

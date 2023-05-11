@@ -28,7 +28,7 @@ const router = createBrowserRouter([
       { path: "/admin/dashboard", element: <Dashboard></Dashboard> },
       { path: "/admin/dashboard/upload", element: <UploadBooks /> },
       { path: "/admin/dashboard/manage", element: <ManageBooks /> },
-      { path: "/admin/dashboard/edit-books", element: <EditBooks /> },
+      { path: "/admin/dashboard/edit-books/:id", element: <EditBooks /> },
     ],
   },
 ]);
